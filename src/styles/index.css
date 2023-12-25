@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* apply the custom class for background image created in the tailwind.config.js file */
+  @apply bg-app;
+}
