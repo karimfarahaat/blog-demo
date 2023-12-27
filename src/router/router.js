@@ -27,6 +27,14 @@ export const router = createBrowserRouter([
         path: "form",
         element: <FormPage />,
       },
+      // {
+      //   path: "add",
+      //   element: <FormPage />,
+      // },
+      // {
+      //   path: "edit",
+      //   element: <FormPage />,
+      // },
     ],
   },
   // ])

@@ -3,10 +3,11 @@ import BlogItem from "../components/BlogItem";
 import Button from "../components/Button";
 import Panel from "../components/Panel";
 import Skeleton from "../components/Skeleton";
-import { useFetchBlogsQuery } from "../store";
+import { useFetchBlogQuery, useFetchBlogsQuery } from "../store";
 
 function BlogPage() {
   const { data, isFetching, error } = useFetchBlogsQuery();
+  // const fetchSingle = useFetchBlogQuery();
 
   let content;
   if (isFetching) {
@@ -18,7 +19,7 @@ function BlogPage() {
       </div>
     );
   } else {
-    content = data.map((blog) => {
+    content = data?.map((blog) => {
       return <BlogItem key={blog.id} blog={blog} />;
     });
   }
