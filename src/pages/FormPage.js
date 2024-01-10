@@ -1,39 +1,46 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Panel from "../components/Panel";
 import { GoArrowLeft } from "react-icons/go";
-import {
-  useAddBlogMutation,
-  useEditBlogMutation,
-  useFetchBlogsQuery,
-} from "../store";
-import { useEffect, useState } from "react";
+import { useAddBlogMutation, useEditBlogMutation } from "../store";
+import { useState } from "react";
 import Button from "../components/Button";
 import { faker } from "@faker-js/faker";
 
 function FormPage() {
-  const { data } = useFetchBlogsQuery();
-  console.log("data", data);
-
   const [addBlog] = useAddBlogMutation();
   const [editBlog] = useEditBlogMutation();
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
+  // when we want the editBlog results as they were fired in another file, we can share results instead of call mutation again using the fixedCacheKey
+  // const [editBlog] = useEditBlogMutation({
+  //   fixedCacheKey: "shared-edit-blog",
+  // });
+  // const [title, setTitle] = useState("");
+  // const [body, setBody] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
   // the blog inside location.state that we sent with the edit button in BlogItem.js
   const blogToEdit = location.state?.blogToEdit;
 
-  useEffect(() => {
-    // Set initial values when editing
-    if (location.state && blogToEdit) {
-      setTitle(blogToEdit.title);
-      setBody(blogToEdit.body);
-    }
-  }, [blogToEdit, location.state]);
+  const [formData, setFormData] = useState({
+    body: blogToEdit ? blogToEdit.body : "",
+    title: blogToEdit ? blogToEdit.title : "",
+  });
+
+  // useEffect(() => {
+  //   // Set initial values when editing
+  //   if (location.state && blogToEdit) {
+  //     setFormData({
+  //       ...formData,
+  //       body: blogToEdit.body,
+  //       title: blogToEdit.title,
+  //     });
+  //     // setTitle(blogToEdit.title);
+  //     // setBody(blogToEdit.body);
+  //   }
+  // }, [blogToEdit, location.state, formData.body]);
 
   //if blogToEdit exists, spread it and change the title and body only
-  const blog = { ...blogToEdit, title, body };
+  const blog = { ...blogToEdit, title: formData.title, body: formData.body };
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (blogToEdit) {
@@ -41,21 +48,37 @@ function FormPage() {
     } else {
       addBlog(blog);
     }
-    setTitle("");
-    setBody("");
+    // setFormData({ body: "", title: "" });
+    // if (blogToEdit) {
+    //   // navigate("/", { state: { blog } });
+    //   navigate("/");
+    // } else {
     navigate("/");
+    // }
   };
 
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-  };
-  const handleBodyChange = (e) => {
-    setBody(e.target.value);
+  // const handleTitleChange = (e) => {
+  //   setTitle(e.target.value);
+  // };
+  // const handleBodyChange = (e) => {
+  //   setBody(e.target.value);
+  // };
+
+  const handleDataChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
   const handleGenerateData = (e) => {
     e.preventDefault();
-    setTitle(faker.lorem.words({ min: 1, max: 3 }));
-    setBody(faker.lorem.words({ min: 10, max: 100 }));
+    setFormData({
+      ...formData,
+      title: faker.lorem.words({ min: 1, max: 3 }),
+      body: faker.lorem.words({ min: 10, max: 100 }),
+    });
+    // setTitle(faker.lorem.words({ min: 1, max: 3 }));
+    // setBody(faker.lorem.words({ min: 10, max: 100 }));
   };
   return (
     <Panel className="flex flex-col gap-6">
@@ -79,15 +102,16 @@ function FormPage() {
             minLength={4}
             maxLength={50}
             type="text"
-            value={title}
-            onChange={handleTitleChange}
+            value={formData.title}
+            name="title"
+            onChange={handleDataChange}
             className="h-8 w-full border-2 rounded border-blue-200 focus:border-blue-500 outline-none"
           />
           <div className="flex flex-row w-full items-center justify-between">
             <label className="text-xl text-blue-500">Blog Body</label>
             <span>
               <i className="text-sm text-gray-400">
-                {1000 - body.length} characters left
+                {1000 - formData.body.length} characters left
               </i>
             </span>
           </div>
@@ -96,8 +120,9 @@ function FormPage() {
             maxLength={1000}
             required
             type="text"
-            value={body}
-            onChange={handleBodyChange}
+            value={formData.body}
+            name="body"
+            onChange={handleDataChange}
             className="h-8 w-full border-2 rounded border-blue-200  focus:border-blue-500 outline-none"
           />
           <div className="flex flex-col w-full max-w-96 gap-2 sm:flex-row justify-between items-center">

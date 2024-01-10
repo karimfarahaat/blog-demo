@@ -5,7 +5,7 @@ function Layout() {
     // this empty fragment could have been a layout for the App,
     // where we render the pages in any specific tag for example
     <>
-      {/* Where to render our elements in router is the Outlet */}
+      {/* Where to render our elements in router, is the Outlet */}
       <Outlet />
     </>
   );

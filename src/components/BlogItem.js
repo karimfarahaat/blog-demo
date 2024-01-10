@@ -7,6 +7,7 @@ import { useState } from "react";
 
 function BlogItem({ blog }) {
   const [removeBlog] = useRemoveBlogMutation();
+
   // State to control text visibility:
   const [showFullText, setShowFullText] = useState(false);
 

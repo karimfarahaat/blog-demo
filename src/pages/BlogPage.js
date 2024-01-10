@@ -3,13 +3,13 @@ import BlogItem from "../components/BlogItem";
 import Button from "../components/Button";
 import Panel from "../components/Panel";
 import Skeleton from "../components/Skeleton";
-import { useFetchBlogQuery, useFetchBlogsQuery } from "../store";
+import { useFetchBlogsQuery } from "../store";
 
 function BlogPage() {
   const { data, isFetching, error } = useFetchBlogsQuery();
-  // const fetchSingle = useFetchBlogQuery();
 
   let content;
+
   if (isFetching) {
     content = <Skeleton times={3} className="h-8 w-auto" />;
   } else if (error) {
@@ -23,6 +23,7 @@ function BlogPage() {
       return <BlogItem key={blog.id} blog={blog} />;
     });
   }
+
   return (
     <Panel className="flex flex-col gap-5">
       <div className="flex flex-row justify-between items-center">

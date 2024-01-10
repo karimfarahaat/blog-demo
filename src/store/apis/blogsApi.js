@@ -27,13 +27,13 @@ const blogsApi = createApi({
       }),
       // Fetch single blog by ID query
       fetchBlog: builder.query({
-        query: (id) => {
+        query: (blog) => {
           return {
-            url: `/blogs/${id}`,
+            url: `/blogs/${blog.id}`,
             method: "GET",
           };
         },
-        providesTags: (result, error, id) => [{ type: "Blog", id }],
+        providesTags: (result, error, blog) => [{ type: "Blog", id: blog.id }],
       }),
       addBlog: builder.mutation({
         invalidatesTags: (result, error, blogs) => {
@@ -55,7 +55,7 @@ const blogsApi = createApi({
       }),
       removeBlog: builder.mutation({
         invalidatesTags: (result, error, blog) => {
-          return [{ type: "Blog", id: blog.id }];
+          return [{ type: "AllBlogs" }];
         },
         query: (blog) => {
           return {
@@ -66,9 +66,9 @@ const blogsApi = createApi({
       }),
       editBlog: builder.mutation({
         invalidatesTags: (result, error, blog) => {
-          return [{ type: "Blog", id: blog.id }];
+          // return [{ type: "Blog", id: blog.id }];
           // completes the commented providedTags for fetchBlogs to be effective
-          //   return [{ type: "Blog", id: blog.id }, { type: "AllBlogs" }];
+          return [{ type: "Blog", id: blog.id }, { type: "AllBlogs" }];
         },
         query: (blog) => {
           const formattedDate = new Date().toLocaleDateString("en-GB");
